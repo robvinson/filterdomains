@@ -36,7 +36,19 @@ func main() {
 	var filters []string
 	scanner := bufio.NewScanner(filterFile)
 	for scanner.Scan() {
-		filters = append(filters, strings.TrimSpace(scanner.Text()))
+		line := strings.TrimSpace(scanner.Text())
+		if line == "" || strings.HasPrefix(line, "#") {
+			// Skip empty lines and lines that start with #
+			continue
+		}
+
+		// Split the line at the first occurrence of "#"
+		parts := strings.SplitN(line, "#", 2)
+		domain := strings.TrimSpace(parts[0])
+
+		if domain != "" {
+			filters = append(filters, domain)
+		}
 	}
 
 	if err := scanner.Err(); err != nil {
